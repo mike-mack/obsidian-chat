@@ -4,7 +4,7 @@ import time
 import traceback
 from pydantic import BaseModel
 from app.services.query_engine import QueryEngine
-from app.services.embedder.openai_impl import OpenAIEmbedder
+from app.services.embedder.factory import get_embedder
 from app.services.vectorstore import VectorStore
 from app.core import get_logger
 
@@ -14,7 +14,7 @@ logger = get_logger(__name__)
 router = APIRouter(prefix="/query", tags=["query"])
 
 # Initialize services
-embedder = OpenAIEmbedder()
+embedder = get_embedder()
 vector_store = VectorStore(embedder)
 query_engine = QueryEngine(vector_store)
 

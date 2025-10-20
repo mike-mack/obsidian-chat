@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from app.services.vault_manager import VaultManager
 from app.services.chunker import Chunker
 from app.services.vectorstore import VectorStore
-from app.services.embedder.openai_impl import OpenAIEmbedder
+from app.services.embedder.factory import get_embedder
 from app.db.session import get_db
 from sqlalchemy.orm import Session
 from app.core import get_logger
@@ -19,7 +19,7 @@ router = APIRouter(prefix="/vaults", tags=["vaults"])
 # Initialize services
 vault_manager = VaultManager()
 chunker = Chunker()
-embedder = OpenAIEmbedder()
+embedder = get_embedder()
 vector_store = VectorStore(embedder)
 
 # Pydantic models for API
