@@ -1,0 +1,6 @@
+# This is a placeholder file for Alembic migrations.
+# To initialize alembic properly, you would run:
+# alembic init app/db/alembic
+# Then modify the alembic.ini and env.py files accordingly
+
+# Directory structure will be populated by the alembic init command
