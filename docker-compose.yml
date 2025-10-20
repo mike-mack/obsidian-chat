@@ -1,0 +1,39 @@
+services:
+  obsidian-chat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: obsidian-chat
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount vector store for persistence
+      - ./vector_store:/app/vector_store
+      # Mount database for persistence
+      - ./data:/app/data
+      # Mount your Obsidian vault (update the path to your vault)
+      # - /path/to/your/obsidian/vault:/vault:ro
+    environment:
+      # Database settings
+      - DATABASE_URL=sqlite:////app/data/obsidian_chat.db
+      # Vector store settings
+      - VECTOR_STORE_PATH=/app/vector_store
+      # Embedding settings
+      # IMPORTANT: Set EMBEDDING_MODEL to 'local' if you don't have an OpenAI API key
+      # Options: 'openai' (requires API key) or 'local' (uses sentence-transformers)
+      - EMBEDDING_MODEL=${EMBEDDING_MODEL:-local}
+      # Uncomment and set if using OpenAI embeddings
+      # - OPENAI_API_KEY=${OPENAI_API_KEY}
+      # - EMBEDDING_DIMENSION=1536
+      # Chunking settings
+      - CHUNK_SIZE=1000
+      - CHUNK_OVERLAP=200
+      # Obsidian vault path (update if you mount a vault)
+      # - DEFAULT_VAULT_PATH=/vault
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/vaults/').read()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
